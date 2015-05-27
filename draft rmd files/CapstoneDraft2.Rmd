@@ -1,0 +1,64 @@
+---
+title: "Capstone Draft 1"
+author: "Alex Vindua"
+date: "May 13, 2015"
+output: html_document
+---
+
+##Import 
+```{r}
+library(readr)
+raw <- read_csv("C:/Users/Alex/1371_traffic_volumes.csv")
+ ```
+
+##Initial Cleaning
+```{r}
+library(magrittr)
+library(dplyr)
+raw <- tbl_df(raw) #conversion to tbl_df
+
+#rename columns
+library(dplyr)
+renamed.raw <- rename(raw, c(LHRS = "lhrs",`O/S`="OS", Year = "year", `Hwy #` = "hwy.type", `Hwy Let`= "hwy.let", `Hwy Type (Text)` = "hwy.type", `Location Description` = "location", Reg = "reg", `Section Length` = "section.len", `Connecting Link Length` = "conn.link.len", `Secondary Description (for Connecting Links, Regional Boundarys,etc)` = "sec.description", `Travel Pattern` = "travel.pattern", `DHV %` = "dhv.percent", `Directional Split` = "directional.split", AADT = "aadt", `Yearly % Change in AADT` = "annual.aadt.change", `10 Year % Change in AADT` = "decade.change", SADT = "sadt", SAWDT = "sawdt", WADT = "wadt"))
+
+renamed.raw <- rename(raw, c("LHRS" = "lhrs","O/S"="OS", "Year" = "year", "Hwy #" = "hwy.num", "Hwy Let"= "hwy.let", "Hwy Type (Text)" = "hwy.type", "Location Description" = "location", "Reg" = "reg", "Section Length" = "section.len", "Connecting Link Length" = "conn.link.len", "Secondary Description (for Connecting Links, Regional Boundarys,etc)" = "sec.description", "Travel Pattern" = "travel.pattern", "DHV %" = "dhv.percent", "Directional Split" = "directional.split", "AADT" = "aadt", "Yearly % Change in AADT" = "annual.aadt.change", "10 Year % Change in AADT" = "decade.change", "SADT" = "sadt", "SAWDT"= "sawdt", "WADT" = "wadt"))
+
+renamed.raw <- rename(raw, LHRS =lhrs,`O/S`=OS, Year =year, `Hwy #` =hwy.type, `Hwy Let`=hwy.let, `Hwy Type (Text)` =hwy.type, `Location Description` =location, Reg =reg, `Section Length` =section.len, `Connecting Link Length` =conn.link.len, `Secondary Description (for Connecting Links, Regional Boundarys,etc)` =sec.description, `Travel Pattern` =travel.pattern, `DHV %` = dhv.percent, `Directional Split` =directional.split, AADT =aadt, `Yearly % Change in AADT` =annual.aadt.change, `10 Year % Change in AADT` =decade.change, SADT =sadt, SAWDT =sawdt, WADT =wadt)
+
+
+renamed.raw <- renamed.raw[-1:-2,] #remove extraneous rows (French and blank row)
+
+#set proper data types 
+renamed.raw[[9:11,13:20]] <- lapply(renamed.raw, function(x) as.numeric(renamed.raw[[9:11,13:20]])) #figure out issue here
+
+#ugly manual solution
+renamed.raw[[3]] <- as.factor(renamed.raw[[3]])
+renamed.raw[[9]] <- as.numeric(renamed.raw[[9]])
+renamed.raw[[10]] <- as.numeric(renamed.raw[[10]])
+renamed.raw[[13]] <- as.numeric(renamed.raw[[13]])
+renamed.raw[[14]] <- as.numeric(renamed.raw[[14]])
+renamed.raw[[15]] <- as.numeric(renamed.raw[[15]])
+renamed.raw[[16]] <- as.numeric(renamed.raw[[16]])
+renamed.raw[[17]] <- as.numeric(renamed.raw[[17]])
+renamed.raw[[18]] <- as.numeric(renamed.raw[[18]])
+renamed.raw[[19]] <- as.numeric(renamed.raw[[19]])
+renamed.raw[[20]] <- as.numeric(renamed.raw[[20]])
+```
+
+##
+``` {r}
+library(dplyr)
+library(ggvis)
+
+filter1 <- select(renamed.raw, lhrs, year, aadt)
+
+renamed.raw %>%
+  group_by(lhrs) %>%
+  summarise(avg=mean(aadt)) %>%
+  ggvis(~lhrs, ~avg) %>%
+  layer_points()
+
+#sort lhrs by geographic proximity to city?
+
+```
+
