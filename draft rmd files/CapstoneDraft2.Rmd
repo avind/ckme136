@@ -20,7 +20,7 @@ raw2 <- raw[-1:-2,] #remove extraneous rows (French and blank row)
 
 #rename columns
 library(dplyr)
-renamed.raw <- rename(raw2, "lhrs" = LHRS,"OS" =`O/S`, "year" = Year, "hwy.type" = `Hwy #`, "hwy.let" = `Hwy Let`, "hwy.type" = `Hwy Type (Text)`, "location" = `Location Description`, "reg" = Reg, "section.len" = `Section Length`, "conn.link.len" = `Connecting Link Length`, "sec.description" = `Secondary Description (for Connecting Links, Regional Boundarys,etc)`, "travel.pattern" = `Travel Pattern`, "dhv.percent" = `DHV %`, "directional.split" = `Directional Split`, "aadt" = AADT, "annual.aadt.change" = `Yearly % Change in AADT`, "decade.change" = `10 Year % Change in AADT`, "sadt" = SADT, "sawdt" = SAWDT, "wadt" = WADT)
+renamed.raw <- rename(raw2, "lhrs" = LHRS,"OS" =`O/S`, "year" = Year, "hwy.num" = `Hwy #`, "hwy.let" = `Hwy Let`, "hwy.type" = `Hwy Type (Text)`, "location" = `Location Description`, "reg" = Reg, "section.len" = `Section Length`, "conn.link.len" = `Connecting Link Length`, "sec.description" = `Secondary Description (for Connecting Links, Regional Boundarys,etc)`, "travel.pattern" = `Travel Pattern`, "dhv.percent" = `DHV %`, "directional.split" = `Directional Split`, "aadt" = AADT, "annual.aadt.change" = `Yearly % Change in AADT`, "decade.change" = `10 Year % Change in AADT`, "sadt" = SADT, "sawdt" = SAWDT, "wadt" = WADT)
 
 #set proper data types 
 renamed.raw[[9:11,13:20]] <- lapply(renamed.raw, function(x) as.numeric(renamed.raw[[9:11,13:20]])) #figure out issue here
@@ -39,6 +39,35 @@ renamed.raw[[19]] <- as.numeric(renamed.raw[[19]])
 renamed.raw[[20]] <- as.numeric(renamed.raw[[20]])
 ```
 
+```{r}
+#checking for NAs
+length(renamed.raw$lhrs)
+length(renamed.raw$year)
+length(renamed.raw$aadt)
+sum(is.na(renamed.raw$aadt))
+sum(is.na(renamed.raw$sadt))
+sum(is.na(renamed.raw$sawdt))
+sum(is.na(renamed.raw$wadt))
+sum(renamed.raw$year=="9999")
+#there are 553 NA entries for aadt. year is also set to 9999 for these entries
+```
+There are 553 incomplete entries. These entries are set to Year "9999" and have no values for AADT and the related variables.
+
+```{r}
+#removing NAs and duplicate entries
+library(dplyr)
+library(magrittr)
+fil.data <- renamed.raw %>%
+  distinct() %>%
+  filter(year!="9999")
+
+length(fil.data$year)
+length(fil.data$aadt)
+
+```
+
+There are `r length(fil.data$aadt)` remaining variables.
+
 ##
 ``` {r}
 library(dplyr)
@@ -56,9 +85,4 @@ renamed.raw %>%
 
 ```
 ##Exploratory
-
-```{r}
-
-
-```
 
