@@ -14,7 +14,7 @@ raw3 <- type_convert(raw2)
 str(raw3) #check datatypes
 ```
 
-##Initial Cleaning
+##1: Initial Cleaning
 ```{r}
 library(magrittr)
 library(dplyr)
@@ -48,10 +48,9 @@ fil.data <- renamed.raw %>%
 
 length(fil.data$year)
 length(fil.data$aadt)
-
 ```
 
-There are `r length(fil.data$aadt)` remaining variables.
+There are `r length(fil.data$aadt)` remaining observations
 
 ##
 ``` {r}
@@ -63,7 +62,8 @@ filter1 <- select(renamed.raw, lhrs, year, aadt)
 #sort lhrs by geographic proximity to city?
 
 ```
-##Exploratory
+
+##2: Exploratory
 ```{r}
 renamed.raw %>%
   group_by(lhrs) %>%
@@ -85,5 +85,18 @@ plot(renamed.raw$sadt~renamed.raw$aadt, xlab="SADT", ylab="AADT", main="Plot of 
 
 ```
 
+##3: Visualizations
+
+```{r}
+library(ggvis)
+library(ggplot2)
+```
+
+
+
+##4: Predictions
+```{r}
+
+```
 
 
