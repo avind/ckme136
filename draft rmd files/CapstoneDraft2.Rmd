@@ -9,34 +9,19 @@ output: html_document
 ```{r}
 library(readr)
 raw <- read_csv("C:/Users/Alex/1371_traffic_volumes.csv")
- ```
+raw2 <- raw[-1:-2,] #remove extraneous rows (French and blank row) to allow "readr" to reparse variables types correctly
+raw3 <- type_convert(raw2)
+str(raw3) #check datatypes
+```
 
 ##Initial Cleaning
 ```{r}
 library(magrittr)
 library(dplyr)
-raw <- tbl_df(raw) #conversion to tbl_df
-raw2 <- raw[-1:-2,] #remove extraneous rows (French and blank row)
 
 #rename columns
 library(dplyr)
-renamed.raw <- rename(raw2, "lhrs" = LHRS,"OS" =`O/S`, "year" = Year, "hwy.num" = `Hwy #`, "hwy.let" = `Hwy Let`, "hwy.type" = `Hwy Type (Text)`, "location" = `Location Description`, "reg" = Reg, "section.len" = `Section Length`, "conn.link.len" = `Connecting Link Length`, "sec.description" = `Secondary Description (for Connecting Links, Regional Boundarys,etc)`, "travel.pattern" = `Travel Pattern`, "dhv.percent" = `DHV %`, "directional.split" = `Directional Split`, "aadt" = AADT, "annual.aadt.change" = `Yearly % Change in AADT`, "decade.change" = `10 Year % Change in AADT`, "sadt" = SADT, "sawdt" = SAWDT, "wadt" = WADT)
-
-#set proper data types 
-renamed.raw[[9:11,13:20]] <- lapply(renamed.raw, function(x) as.numeric(renamed.raw[[3,9,10,13:20]])) #figure out issue here
-
-#ugly manual solution
-renamed.raw[[3]] <- as.factor(renamed.raw[[3]])
-renamed.raw[[9]] <- as.numeric(renamed.raw[[9]])
-renamed.raw[[10]] <- as.numeric(renamed.raw[[10]])
-renamed.raw[[13]] <- as.numeric(renamed.raw[[13]])
-renamed.raw[[14]] <- as.numeric(renamed.raw[[14]])
-renamed.raw[[15]] <- as.numeric(renamed.raw[[15]])
-renamed.raw[[16]] <- as.numeric(renamed.raw[[16]])
-renamed.raw[[17]] <- as.numeric(renamed.raw[[17]])
-renamed.raw[[18]] <- as.numeric(renamed.raw[[18]])
-renamed.raw[[19]] <- as.numeric(renamed.raw[[19]])
-renamed.raw[[20]] <- as.numeric(renamed.raw[[20]])
+renamed.raw <- rename(raw3, "lhrs" = LHRS,"OS" =`O/S`, "year" = Year, "hwy.num" = `Hwy #`, "hwy.let" = `Hwy Let`, "hwy.type" = `Hwy Type (Text)`, "location" = `Location Description`, "reg" = Reg, "section.len" = `Section Length`, "conn.link.len" = `Connecting Link Length`, "sec.description" = `Secondary Description (for Connecting Links, Regional Boundarys,etc)`, "travel.pattern" = `Travel Pattern`, "dhv.percent" = `DHV %`, "directional.split" = `Directional Split`, "aadt" = AADT, "annual.aadt.change" = `Yearly % Change in AADT`, "decade.change" = `10 Year % Change in AADT`, "sadt" = SADT, "sawdt" = SAWDT, "wadt" = WADT)
 ```
 
 ```{r}
@@ -86,4 +71,19 @@ renamed.raw %>%
   ggvis(~lhrs, ~avg) %>%
   layer_points()
 ```
+
+```{r}
+library(pastecs)
+library(dplyr)
+explor.stat <- select (renamed.raw, aadt:wadt)
+stat.desc(explor.stat)
+```
+
+```{r}
+summary(lm(sadt~aadt, data=renamed.raw))
+plot(renamed.raw$sadt~renamed.raw$aadt, xlab="SADT", ylab="AADT", main="Plot of SADT and AADT")
+
+```
+
+
 
