@@ -61,7 +61,7 @@ There are `r length(fil.data$aadt)` remaining observations
 library(dplyr)
 library(ggvis)
 
-filter1 <- select(renamed.raw, lhrs, year, aadt)
+filter1 <- select(fil.data, lhrs, year, aadt)
 
 #sort lhrs by geographic proximity to city?
 
@@ -69,7 +69,7 @@ filter1 <- select(renamed.raw, lhrs, year, aadt)
 
 ##2: Exploratory
 ```{r}
-renamed.raw %>%
+fil.data %>%
   group_by(lhrs) %>%
   summarise(avg=mean(aadt)) %>%
   ggvis(~lhrs, ~avg) %>%
@@ -79,14 +79,14 @@ renamed.raw %>%
 ```{r}
 library(pastecs)
 library(dplyr)
-explor.stat <- select (renamed.raw, aadt:wadt)
+explor.stat <- select (fil.data, aadt:wadt)
 stat.desc(explor.stat)
 ```
 
 ```{r}
 library(psych)
-describe(renamed.raw)
-cor(renamed.raw)
+describe(fil.data)
+#cor(renamed.raw)
 ```
 
 ```{r}
@@ -100,18 +100,26 @@ cor(renamed.raw)
 #MTO divides the highways into four categories: the king's highways, the secondary highways, the tertiary roads, and selected 7000 series highways. the king's highways will be further grouped into the 400 series highways +  the QEW.
 
 library(dplyr)
-#select for QEW, 400, 401, 402, 403, 404, 405, 406, 407, 409, 410, 416, 417, 420, 427)
-qewandfour <- renamed.raw %>%
-  filter(hwy.num == "400", "401", "402", "403", "404", "405", "406", "407", "409", "410", "416", "417", "420", "427")
 
-test <- filter(renamed.raw, hwy.num == "401", "403")  
+#select for the four highway types in the dataset
+king <- filter(fil.data, hwy.type == "King")
+secon <- filter(fil.data, hwy.type == "Sec")
+fwy <- filter(fil.data, hwy.type == "Fwy")
+tert <- filter(fil.data, hwy.type == "Tert")
 
+#select for the 400, 401, 402, 403, 404, 405, 406, 407, 409, 410, 416, 417, 420, 427
+target <- c("400", "401", "402", "403", "404", "405", "406", "407", "409", "410", "416", "417", "420", "427")
+four <- filter(fil.data, hwy.num %in% target)
+
+#select for the remaining non-400 series freeways (the QEW) 
+qew <- filter(fwy, !(hwy.num %in% target))
 ```
 
 
+
 ```{r}
-summary(lm(sadt~aadt, data=renamed.raw))
-plot(renamed.raw$sadt~renamed.raw$aadt, xlab="SADT", ylab="AADT", main="Plot of SADT and AADT")
+summary(lm(sadt~aadt, data=fil.data))
+plot(renamed.raw$sadt~fil.data$aadt, xlab="SADT", ylab="AADT", main="Plot of SADT and AADT")
 
 ```
 
