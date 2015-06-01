@@ -2,9 +2,7 @@
 title: "Capstone Draft 1"
 author: "Alex Vindua"
 date: "May 13, 2015"
-output: 
-  html_document: 
-    keep_md: yes
+output: html_document
 ---
 
 ##Import 
@@ -129,11 +127,4 @@ library(ggplot2)
 
 ```
 
-```{r}
-```{r, include=FALSE}
-   # add this chunk to end of mycode.rmd
-   file.rename(from="scripts/mycode.md", 
-               to="README.md")
-```
-```
 
