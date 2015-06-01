@@ -1,6 +1,6 @@
 ---
-title: "Capstone Draft 1"
-author: "Alex Vindua"
+title: "Capstone Project"
+author: "Alex V"
 date: "May 13, 2015"
 output: 
   html_document: 
