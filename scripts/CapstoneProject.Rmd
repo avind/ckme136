@@ -116,12 +116,20 @@ qew <- filter(fwy, !(hwy.num %in% target))
 ```
 
 
-
 ```{r}
 summary(lm(sadt~aadt, data=fil.data))
-plot(renamed.raw$sadt~fil.data$aadt, xlab="SADT", ylab="AADT", main="Plot of SADT and AADT")
+plot(fil.data$sadt~fil.data$aadt, xlab="SADT", ylab="AADT", main="Plot of SADT and AADT")
 
 ```
+
+```{r}
+fil.data %>%
+  group_by(hwy.type) %>%
+  ggvis (~year, ~aadt, stroke = ~factor(hwy.type)) %>%
+  layer_smooths() %>%
+  title= "Year ~ AADT"
+```
+
 
 ##3: Visualizations
 
@@ -130,18 +138,34 @@ library(ggvis)
 library(ggplot2)
 ```
 
+```{r}
+fwy %>% 
+  ggvis(~year, ~aadt) %>%
+  layer_points() %>%
+  layer_model_predictions(model = "lm", se = TRUE)
+
+king %>% 
+  ggvis(~year, ~aadt) %>%
+  layer_points() %>%
+  layer_model_predictions(model = "lm", se = TRUE)
+
+secon %>% 
+  ggvis(~year, ~aadt) %>%
+  layer_points() %>%
+  layer_model_predictions(model = "lm", se = TRUE)
+
+tert %>% 
+  ggvis(~year, ~aadt) %>%
+  layer_points() %>%
+  layer_model_predictions(model = "lm", se = TRUE)
+```
 
 
 ##4: Predictions
-```{r}
 
-```
-
-```{r}
 ```{r, include=FALSE}
    # add this chunk to end of mycode.rmd
    file.rename(from="scripts/mycode.md", 
                to="README.md")
-```
 ```
 
