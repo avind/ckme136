@@ -55,7 +55,7 @@ glimpse(fil.data)
 
 #convert travel.pattern to factor
 fil.data$travel.pattern <-  factor(fil.data$travel.pattern)
-is.factor(fil.data$travel.pattern.f)
+is.factor(fil.data$travel.pattern)
 ```
 
 There are `r length(fil.data$aadt)` remaining observations
@@ -248,5 +248,12 @@ ggplot(model_ulm)
    # add this chunk to end of mycode.rmd
    file.rename(from="scripts/mycode.md", 
                to="README.md")
+```
+
+##GIS Mapping with ORN
+
+```{r}
+> orndbf <- read.dbf("C:/Users/Alex/ORN_SEGMENT_WITH_ADDRESS.dbf")
+> str(orndbf)
 ```
 
