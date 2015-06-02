@@ -51,7 +51,11 @@ fil.data <- renamed.raw %>%
 length(fil.data$year)
 length(fil.data$aadt)
 
-glimpse(renamed.raw)
+glimpse(fil.data)
+
+#convert travel.pattern to factor
+fil.data$travel.pattern <-  factor(fil.data$travel.pattern)
+is.factor(fil.data$travel.pattern.f)
 ```
 
 There are `r length(fil.data$aadt)` remaining observations
@@ -151,6 +155,7 @@ ggvis(~year, ~aadt, fill = ~hwy.type) %>%
 layer_densities()
 ```
 
+#look for areas that have large seasonal variations
 
 ##3: Visualizations
 
@@ -161,7 +166,7 @@ library(ggplot2)
 
 ```{r}
 fwy %>% 
-  ggvis(~year, ~aadt) %>%
+  ggvis(~travel.pattern, ~aadt) %>%
   layer_smooths() %>%
   layer_model_predictions(model = "lm", stroke := "red", se = TRUE)
 
@@ -181,6 +186,19 @@ tert %>%
   layer_model_predictions(model = "lm", stroke := "red", se = TRUE)
 ```
 
+```{r}
+#Distribution of Travel by Pattern
+fwy %>% 
+  ggvis(~travel.pattern, ~aadt) %>%
+  layer_histograms()
+
+fwyhist <- select(fwy, travel.pattern, aadt)
+hist(fwyhist$aadt)
+
+
+```
+
+
 
 ##4: Predictions
 
@@ -197,10 +215,24 @@ plot(cordata)
 ```
 
 ```{r}
-model_ulm <- lm (year~aadt, data=fwy)
+model_ulm <- lm (aadt ~ travel.pattern, data=fil.data)
 summary(model_ulm)
 plot(model_ulm)
 ```
+
+```{r}
+model_ulm <- lm (aadt ~ travel.pattern, data=fwy)
+summary(model_ulm)
+plot(model_ulm)
+
+fwy %>% 
+  ggvis(~travel.pattern, ~aadt) %>%
+  layer_histograms() %>%
+  layer_model_predictions()
+
+ggplot(model_ulm)
+```
+
 
 #rank data
 
