@@ -118,7 +118,6 @@ qew <- filter(fwy, !(hwy.num %in% target))
 ```{r}
 summary(lm(sadt~aadt, data=fil.data))
 plot(fil.data$sadt~fil.data$aadt, xlab="SADT", ylab="AADT", main="Plot of SADT and AADT")
-
 ```
 
 ```{r}
@@ -184,6 +183,26 @@ tert %>%
 
 
 ##4: Predictions
+
+```{r}
+library(dplyr)
+library(corrplot)
+cordata <- select(fil.data, aadt, sadt, sawdt, wadt)
+dhvcor <- select(fil.data, dhv.percent, aadt, sadt, sawdt, wadt)
+cor(cordata)
+cor(dhvcor)
+corrplot(cor(cordata))
+corrplot(cor(dhvcor))
+plot(cordata)
+```
+
+```{r}
+model_ulm <- lm (year~aadt, data=fwy)
+summary(model_ulm)
+plot(model_ulm)
+```
+
+#rank data
 
 ```{r, include=FALSE}
    # add this chunk to end of mycode.rmd
