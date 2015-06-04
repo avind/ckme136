@@ -17,16 +17,14 @@ str(raw3) #check datatypes
 ```
 
 ##1: Initial Cleaning
-```{r}
+```{r echo = FALSE}
 library(magrittr)
 library(dplyr)
 
 #rename columns
 library(dplyr)
 renamed.raw <- rename(raw3, "lhrs" = LHRS,"OS" =`O/S`, "year" = Year, "hwy.num" = `Hwy #`, "hwy.let" = `Hwy Let`, "hwy.type" = `Hwy Type (Text)`, "location" = `Location Description`, "reg" = Reg, "section.len" = `Section Length`, "conn.link.len" = `Connecting Link Length`, "sec.description" = `Secondary Description (for Connecting Links, Regional Boundarys,etc)`, "travel.pattern" = `Travel Pattern`, "dhv.percent" = `DHV %`, "directional.split" = `Directional Split`, "aadt" = AADT, "annual.aadt.change" = `Yearly % Change in AADT`, "decade.change" = `10 Year % Change in AADT`, "sadt" = SADT, "sawdt" = SAWDT, "wadt" = WADT)
-```
 
-```{r}
 #checking for NAs
 length(renamed.raw$lhrs)
 length(renamed.raw$year)
@@ -37,13 +35,8 @@ sum(is.na(renamed.raw$sawdt))
 sum(is.na(renamed.raw$wadt))
 sum(renamed.raw$year=="9999")
 #there are 553 NA entries for aadt. year is also set to 9999 for these entries
-```
-There are 553 incomplete entries. These entries are set to Year "9999" and have no values for AADT and the related variables.
 
-```{r}
 #removing NAs and duplicate entries
-library(dplyr)
-library(magrittr)
 fil.data <- renamed.raw %>%
   distinct() %>%
   filter(year!="9999")
@@ -57,14 +50,6 @@ glimpse(fil.data)
 fil.data$travel.pattern <-  factor(fil.data$travel.pattern)
 fil.data$reg <- factor(fil.data$reg)
 is.factor(fil.data$travel.pattern)
-```
-
-There are `r length(fil.data$aadt)` remaining observations
-
-##
-``` {r}
-library(dplyr)
-library(ggvis)
 
 #grouping data by regions: Central, Eastern, Northeastern, Northwestern, West
 central <- filter(fil.data, reg == "CR")
@@ -78,19 +63,13 @@ nrow(eastern)
 nrow(noreast)
 nrow(norwest)
 nrow(west)
-
-#sort lhrs by geographic proximity to city?
-
 ```
+
+There are `r sum(renamed.raw$year=="9999")` incomplete entries. These entries are set to Year "9999" and have no values for AADT and the related variables.
+
+There are `r length(fil.data$aadt)` remaining observations
 
 ##2: Exploratory
-```{r}
-fil.data %>%
-  group_by(lhrs) %>%
-  summarise(avg=mean(aadt)) %>%
-  ggvis(~lhrs, ~avg) %>%
-  layer_points()
-```
 
 ```{r}
 library(pastecs)
@@ -103,13 +82,6 @@ stat.desc(explor.stat)
 library(psych)
 describe(fil.data)
 #cor(renamed.raw)
-```
-
-```{r}
-#data is divided between rural and urban highways
-#and solely 400 series highways etc.
-
-#group by highway and then by location
 ```
 
 ```{r}
@@ -144,6 +116,7 @@ fil.data %>%
   title= "Year ~ AADT"
 ```
 
+Distribution of AADT, SADT, SAWDT, and WADT
 ```{r}
 datadis <- select(fil.data, aadt, sadt, sawdt, wadt)
 boxplot(datadis,
@@ -152,7 +125,7 @@ boxplot(datadis,
         xlab="Data Type")
 ```
 
-Histogram of Highway Type
+Histograms of Highway Type
 ```{r}
 fil.data %>%
   group_by(hwy.type) %>%
@@ -255,7 +228,12 @@ p5 <- qplot(west$aadt,
       main = "Histogram for West",
       xlab = "AADT")
 
-multiplot(p1, p2, p3, p4, p5, cols=3)
+p6 <- qplot(fil.data$aadt,
+      geom="histogram",
+      main = "Histogram for All Regions",
+      xlab = "AADT")
+
+multiplot(p1, p2, p3, p4, p5, p6, cols=3)
 
 
 ```
