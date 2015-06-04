@@ -239,7 +239,7 @@ multiplot(p1, p2, p3, p4, p5, p6, cols=3)
 ```
 
 
-#look for areas that have large seasonal variations
+<!-- look for areas that have large seasonal variations -->
 
 ##3: Visualizations
 
@@ -326,7 +326,7 @@ ggplot(model_ulm)
 ```
 
 
-#rank data
+<!-- rank data 
 
 ```{r, include=FALSE}
    # add this chunk to end of mycode.rmd
@@ -341,3 +341,4 @@ ggplot(model_ulm)
 > str(orndbf)
 ```
 
+-->
