@@ -53,8 +53,9 @@ length(fil.data$aadt)
 
 glimpse(fil.data)
 
-#convert travel.pattern to factor
+#convert travel.pattern and region to factor
 fil.data$travel.pattern <-  factor(fil.data$travel.pattern)
+fil.data$reg <- factor(fil.data$reg)
 is.factor(fil.data$travel.pattern)
 ```
 
@@ -65,7 +66,18 @@ There are `r length(fil.data$aadt)` remaining observations
 library(dplyr)
 library(ggvis)
 
-filter1 <- select(fil.data, lhrs, year, aadt)
+#grouping data by regions: Central, Eastern, Northeastern, Northwestern, West
+central <- filter(fil.data, reg == "CR")
+eastern <- filter(fil.data, reg == "ER")
+noreast <- filter(fil.data, reg == "NE")
+norwest <- filter(fil.data, reg == "NW")
+west <- filter(fil.data, reg == "SW")
+ 
+nrow(central)
+nrow(eastern)
+nrow(noreast)
+nrow(norwest)
+nrow(west)
 
 #sort lhrs by geographic proximity to city?
 
@@ -154,6 +166,47 @@ group_by(hwy.type) %>%
 ggvis(~year, ~aadt, fill = ~hwy.type) %>%
 layer_densities()
 ```
+
+```{r}
+#describe distribution of patterns by region
+#central
+library(ggvis)
+par(mfrow=c(3,2))
+ggvis(central, ~aadt, fill:= "#fff8dc") %>%
+  layer_histograms() %>%
+  add_axis("x", title = "AADT") %>%
+  add_axis("y", title = "Count") %>%
+
+library(ggplot2)
+  
+p1 <- qplot(central$aadt,
+      geom="histogram",
+      main = "Histogram for Age",
+      xlab = "AADT")
+
+p1 <- qplot(central$aadt,
+      geom="histogram",
+      main = "Histogram for Age",
+      xlab = "AADT")
+
+p1 <- qplot(central$aadt,
+      geom="histogram",
+      main = "Histogram for Age",
+      xlab = "AADT")
+
+p1 <- qplot(central$aadt,
+      geom="histogram",
+      main = "Histogram for Age",
+      xlab = "AADT")
+
+p1 <- qplot(central$aadt,
+      geom="histogram",
+      main = "Histogram for Age",
+      xlab = "AADT")
+
+
+```
+
 
 #look for areas that have large seasonal variations
 
